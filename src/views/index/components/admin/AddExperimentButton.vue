@@ -1,29 +1,28 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px">
-    <v-btn slot="activator" color="primary" dark @click="clearForm">
+    <v-btn slot="activator" color="primary" dark @click="openForm">
       <v-icon>add</v-icon>
     </v-btn>
-    <v-card>
+    <v-card height="340px">
       <v-card-title>
         <span class="headline">实验</span>
       </v-card-title>
       <v-card-text>
-        <v-container>
-          <v-flex xs12>
-            <v-form ref="form">
-              <v-text-field
-                label="实验*"
-                required
-                v-model="experiment.name"
-                :rules="rules.requiredRules"
-              ></v-text-field>
-            </v-form>
-          </v-flex>
-        </v-container>
+        <v-flex xs12>
+          <v-form ref="form">
+            <v-text-field
+              label="实验*"
+              required
+              v-model="experiment.name"
+              :rules="rules.requiredRules"
+            ></v-text-field>
+            <v-select v-model="experiment.fileExtension" :items="items" attach chips label="上传文件类型"></v-select>
+          </v-form>
+        </v-flex>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="save">
+        <v-btn color="blue darken-1" flat @click="save" :disabled="!validate">
           <v-icon>done</v-icon>
         </v-btn>
       </v-card-actions>
@@ -36,24 +35,33 @@ export default {
   data: () => ({
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-    experiment: { name: null }
+    items: ["无", ".zip, .rar, .7z", ".doc, .docx"],
+    value: [null, ".zip, .rar, .7z", ".doc, .docx"],
+    experiment: { name: null, fileExtension: null }
   }),
   methods: {
-    clearForm() {
+    openForm() {
       this.$refs.form.resetValidation();
       this.$refs.form.reset();
     },
     save() {
       if (this.$refs.form.validate()) {
         this.$store.dispatch(NAMESPACE + "/" + ADD_EXP, {
-          path: this.$route.path,
+          cid: this.$route.params.cid,
           exp: this.experiment
         });
         this.$nextTick(() => {
-          this.$refs.form.reset();
           this.dialog = false;
         });
       }
+    }
+  },
+  computed: {
+    validate() {
+      if (this.experiment.name && this.experiment.fileExtension) {
+        return true;
+      }
+      return false;
     }
   }
 };

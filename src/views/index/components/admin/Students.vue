@@ -1,18 +1,5 @@
 <template>
   <v-card>
-    <v-card-title>
-      {{getCourseName}}
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        prepend-icon="search"
-        label="Search"
-        single-line
-        hide-details
-        clearable
-      ></v-text-field>
-      <add-students-button></add-students-button>
-    </v-card-title>
     <v-data-table
       :headers="headers"
       :items="listStudents"
@@ -56,11 +43,8 @@ import {
   NAMESPACE,
   UPDATE_STUDENT_PASSWORD
 } from "@/views/index/store/types";
-import addstudentsbutton from "@/views/index/components/admin/AddStudentsButton";
 import { mapState } from "vuex";
 export default {
-  props: ["cid"],
-  components: { "add-students-button": addstudentsbutton },
   data() {
     return {
       search: "",
@@ -78,7 +62,10 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch(NAMESPACE + "/" + LIST_STUDENTS, this.$route.path);
+    this.$store.dispatch(
+      NAMESPACE + "/" + LIST_STUDENTS,
+      this.$route.params.cid
+    );
   },
   methods: {
     editItem(item) {
@@ -98,9 +85,6 @@ export default {
     }
   },
   computed: {
-    getCourseName() {
-      return this.$store.getters[NAMESPACE + "/getCourseName"](this.cid);
-    },
     ...mapState(NAMESPACE, { listStudents: state => state.students })
   }
 };

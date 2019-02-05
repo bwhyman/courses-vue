@@ -8,13 +8,19 @@ import * as admintypes from "@/views/index/store/types";
 
 Vue.use(Vuex);
 
+let admin = false;
+if (sessionStorage.getItem("role") === "6983f953b49c88210cb9") {
+  admin = true;
+}
+
 export default new Vuex.Store({
   modules: {
     [logintypes.NAMESPACE]: loginmodule,
     [admintypes.NAMESPACE]: adminmodule
   },
   state: {
-    exception: null
+    exception: null,
+    isAdmin: admin
   },
   mutations: {
     [types.SHOW_EXCEPTION](state, error) {

@@ -7,7 +7,7 @@ module.exports = {
     host: "localhost",
     // 设置代理
     proxy: {
-      "/": {
+      "/api/": {
         // websocket协议代理
         ws: false,
         // 目标 API 地址
@@ -46,5 +46,6 @@ module.exports = {
       // 提取出来的通用 chunk 和 vendor chunk。
       chunks: ["chunk-vendors", "chunk-common", "login"]
     }
-  }
+  },
+  productionSourceMap: false
 };

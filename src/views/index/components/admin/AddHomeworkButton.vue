@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px">
-    <v-btn slot="activator" color="primary" dark @click="clearForm">
+    <v-btn slot="activator" color="primary" dark @click="openForm">
       <v-icon>add</v-icon>
     </v-btn>
     <v-card>
@@ -29,7 +29,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="save">
+        <v-btn color="blue darken-1" flat @click="save" :disabled="!validate">
           <v-icon>done</v-icon>
         </v-btn>
       </v-card-actions>
@@ -46,21 +46,28 @@ export default {
     homework: { title: null, content: null }
   }),
   methods: {
-    clearForm() {
+    openForm() {
       this.$refs.form.resetValidation();
       this.$refs.form.reset();
     },
     save() {
       if (this.$refs.form.validate()) {
         this.$store.dispatch(NAMESPACE + "/" + ADD_HOMEWORK, {
-          path: this.$route.path,
+          cid: this.$route.params.cid,
           homework: this.homework
         });
         this.$nextTick(() => {
-          this.$refs.form.reset();
           this.dialog = false;
         });
       }
+    }
+  },
+  computed: {
+    validate() {
+      if (this.homework.title && this.homework.content) {
+        return true;
+      }
+      return false;
     }
   }
 };

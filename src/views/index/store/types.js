@@ -19,3 +19,16 @@ export const GET_COURSE = "getCourse";
 export const LIST_STUDENTS = "listStudents";
 export const ADD_STUDENTS = "addStudents";
 export const UPDATE_STUDENT_PASSWORD = "updateStuPwd";
+export const DOWNLOAD_ZIP = "downloadZip";
+//
+export const SUBMIT_EXP = "submitExp";
+export const DOWNLOAD_EXP = "downloadExp";
+export const LIST_EXP_DETAILS = "listExpDetails";
+export const LIST_HOMEWORK_DETAILS = "listHomeworkDetails";
+export const SUBMIT_HOMEWORK = "submitHomework";
+//
+export const GET_SETTING = "getSetting";
+export const UPDATE_PASSWORD = "updatePassword";
+//
+export const LOADING = "loading";
+export const GET_LOADED = "getLoaded";

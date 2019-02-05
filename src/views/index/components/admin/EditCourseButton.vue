@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px">
-    <v-btn slot="activator" color="primary" dark @click="clearForm">
+    <v-btn slot="activator" color="primary" dark @click="openForm">
       <v-icon>edit</v-icon>
     </v-btn>
     <v-card>
@@ -31,10 +31,10 @@ export default {
   data: () => ({
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-    course: { id: null, name: "ddd" }
+    course: { id: null, name: null }
   }),
   methods: {
-    clearForm() {
+    openForm() {
       this.$refs.form.resetValidation();
       this.course.id = this.$store.state.adminmodule.course.id;
       this.course.name = this.$store.state.adminmodule.course.name;
@@ -42,11 +42,10 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         this.$store.dispatch(NAMESPACE + "/" + UPDATE_COURSE, {
-          path: this.$route.path,
-          course: this.course
+          course: this.course,
+          cid: this.$route.params.cid
         });
         this.$nextTick(() => {
-          this.$refs.form.reset();
           this.dialog = false;
         });
       }

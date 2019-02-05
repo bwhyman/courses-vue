@@ -41,7 +41,7 @@
                 <v-card-actions>
                   <v-switch label="记住通行证" v-model="user.checked"></v-switch>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click="login">登录</v-btn>
+                  <v-btn color="blue darken-1" flat @click="login" :disabled="!validate">登录</v-btn>
                 </v-card-actions>
               </v-card>
             </v-form>
@@ -73,10 +73,13 @@
               </v-card-text>
             </v-card>
           </v-dialog>
-
           <br>
-          <a href="https://github.com/bwhyman/Courses" target="_blank">
-            <img id="github" alt="github" src="./assets/gh-project.png">
+          <a href="https://github.com/bwhyman/courses" target="_blank">
+            <img class="github" src="./assets/springboot-100.png">
+          </a>
+          <br>
+          <a href="https://github.com/bwhyman/courses-vue" target="_blank">
+            <img class="github" src="./assets/vue-100.png">
           </a>
         </div>
       </v-layout>
@@ -130,7 +133,7 @@ export default {
         this.$store
           .dispatch(types.NAMESPACE + "/" + types.LOGIN, this.user)
           .then(() => {
-            window.location.href = "/index.html";
+            window.location.href = "./index.html";
           })
           .catch(() => {})
           .finally(() => {
@@ -143,7 +146,7 @@ export default {
     },
     async cookieLogin() {
       await this.$store.dispatch(types.NAMESPACE + "/" + types.COOKIE_LOGIN);
-      window.location.href = "/index.html";
+      window.location.href = "./index.html";
     },
     reLogin() {
       this.cookie.name = null;
@@ -153,6 +156,12 @@ export default {
     }
   },
   computed: {
+    validate() {
+      if (this.user.number && this.user.password) {
+        return true;
+      }
+      return false;
+    },
     isCookie() {
       if (this.cookie.name != null) {
         return true;
@@ -183,12 +192,13 @@ export default {
   margin: 30px 30px 0 0;
   text-align: end;
 }
-#github {
-  width: 170px;
-  height: 50px;
-  opacity: 0.5;
-}
-#github:hover {
+.github {
+  text-align: center;
+  width: 80px;
+  height: 70px;
   opacity: 0.8;
+}
+.github:hover {
+  opacity: 1;
 }
 </style>

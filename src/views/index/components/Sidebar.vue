@@ -14,11 +14,7 @@
             <v-list-tile-title>课程</v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile
-            v-for="(c, index) in listCourses"
-            :key="index"
-            :to="{path: '/courses/' + c.id}"
-          >
+          <v-list-tile v-for="(c, index) in listCourses" :key="index" :to="`/courses/${c.id}`">
             <v-list-tile-title>{{c.name}}</v-list-tile-title>
             <v-list-tile-action>
               <v-icon>poll</v-icon>
@@ -26,7 +22,7 @@
           </v-list-tile>
         </v-list-group>
 
-        <v-layout justify-center v-if="isAdmin">
+        <v-layout justify-center v-if="$store.state.isAdmin">
           <v-list-tile>
             <add-course-button></add-course-button>
           </v-list-tile>
@@ -37,16 +33,14 @@
 </template>
 <script>
 import { NAMESPACE } from "@/views/index/store/types";
-import addcoursebutton from "@/views/index/components/admin/AddCourseButton";
 import { mapState } from "vuex";
-import isAdmin from "@/util/Authority";
 export default {
   name: "sidebar",
-  components: { "add-course-button": addcoursebutton },
+  components: {
+    "add-course-button": () =>
+      import("@/views/index/components/admin/AddCourseButton")
+  },
   computed: {
-    isAdmin() {
-      return isAdmin();
-    },
     ...mapState(NAMESPACE, { listCourses: state => state.courses })
   }
 };
