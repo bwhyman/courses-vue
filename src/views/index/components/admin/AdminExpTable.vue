@@ -11,6 +11,7 @@
         <td class="text-xs-center">{{ props.index+1 }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="text-xs-center">{{ props.item.insertTime }}</td>
+        <td class="text-xs-center">{{ props.item.deadLineTime }}</td>
         <td class="text-xs-center">
           <v-btn small color="info" dark :to="`experiments/${props.item.id}/unsubmited`">
             <v-icon>visibility_off</v-icon>
@@ -27,7 +28,7 @@
     </v-data-table>
     <!-- Edit dialog -->
     <v-dialog v-model="dialog" max-width="600px">
-      <v-card height="340px">
+      <v-card>
         <v-card-title>
           <span class="headline">实验</span>
         </v-card-title>
@@ -38,6 +39,12 @@
                 label="实验*"
                 required
                 v-model="experiment.name"
+                :rules="rules.requiredRules"
+              ></v-text-field>
+              <v-text-field
+                label="截止*"
+                required
+                v-model="experiment.deadLineTime"
                 :rules="rules.requiredRules"
               ></v-text-field>
               <v-select
@@ -96,10 +103,17 @@ export default {
       { text: "#", value: "id", align: "center", sortable: true },
       { text: "实验", value: "name", align: "center", sortable: true },
       { text: "日期", value: "insertTime", align: "center", sortable: true },
+      { text: "截止", value: "deadLineTime", align: "center", sortable: true },
       { text: "操作", value: "", align: "center", sortable: false },
       { text: "修改", value: "", align: "center", sortable: false }
     ],
-    experiment: { id: null, name: null, fileExtension: null },
+    experiment: {
+      id: null,
+      name: null,
+      fileExtension: null,
+      deadLineTime: null,
+      course: { id: null }
+    },
     dialog: false,
     deldialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
@@ -111,6 +125,7 @@ export default {
       this.experiment.id = item.id;
       this.experiment.name = item.name;
       this.experiment.fileExtension = item.fileExtension;
+      this.experiment.deadLineTime = item.deadLineTime;
       this.dialog = true;
     },
     openDelete(item) {
@@ -119,12 +134,15 @@ export default {
       this.deldialog = true;
     },
     save() {
+      this.experiment.course.id = this.$route.params.cid;
       this.$store.dispatch(NAMESPACE + "/" + UPDATE_EXP, {
         expid: this.experiment.id,
         cid: this.$route.params.cid,
         exp: this.experiment
       });
-      this.dialog = false;
+      this.$nextTick(() => {
+        this.dialog = false;
+      });
     },
     del() {
       this.$store.dispatch(NAMESPACE + "/" + DEL_EXP, {

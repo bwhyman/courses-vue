@@ -3,13 +3,14 @@
     <v-btn slot="activator" color="primary" dark @click="openForm">
       <v-icon>add</v-icon>
     </v-btn>
-    <v-card height="340px">
+    <v-card>
       <v-card-title>
         <span class="headline">实验</span>
       </v-card-title>
       <v-card-text>
         <v-flex xs12>
           <v-form ref="form">
+            <datetimepicker ref="picker"></datetimepicker>
             <v-text-field
               label="实验*"
               required
@@ -31,13 +32,20 @@
 </template>
 <script>
 import { NAMESPACE, ADD_EXP } from "@/views/index/store/types";
+import datetimepicker from "@/views/index/components/commons/DateTimepicker";
 export default {
+  components: { datetimepicker },
   data: () => ({
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
     items: ["无", ".zip, .rar, .7z", ".doc, .docx"],
     value: [null, ".zip, .rar, .7z", ".doc, .docx"],
-    experiment: { name: null, fileExtension: null }
+    experiment: {
+      name: null,
+      fileExtension: null,
+      deadLineTime: null,
+      course: { id: null }
+    }
   }),
   methods: {
     openForm() {
@@ -46,10 +54,13 @@ export default {
     },
     save() {
       if (this.$refs.form.validate()) {
-        this.$store.dispatch(NAMESPACE + "/" + ADD_EXP, {
-          cid: this.$route.params.cid,
-          exp: this.experiment
-        });
+        let picker = this.$refs.picker;
+        this.experiment.deadLineTime = picker.date + " " + picker.time;
+        (this.experiment.course.id = this.$route.params.cid),
+          this.$store.dispatch(NAMESPACE + "/" + ADD_EXP, {
+            cid: this.$route.params.cid,
+            exp: this.experiment
+          });
         this.$nextTick(() => {
           this.dialog = false;
         });

@@ -14,6 +14,7 @@
           <v-icon color="primary" @click="props.expanded = !props.expanded">more</v-icon>
         </td>
         <td class="text-xs-center">{{ props.item.insertTime }}</td>
+        <td class="text-xs-center">{{ props.item.deadLineTime }}</td>
         <td class="text-xs-center">
           <template v-for="(hd, index) in listHomeworkDetails">
             <span v-if="hd.homework.id == props.item.id" :key="index">{{hd.completeTime}}</span>
@@ -51,11 +52,12 @@ export default {
     rowsPerPage: [20, { text: "全部", value: -1 }],
     headers: [
       { text: "#", value: "id", align: "center", sortable: true },
-      { text: "作业", value: "title", align: "center", sortable: true },
+      { text: "题目", value: "title", align: "center", sortable: true },
       { text: "详细", value: "content", align: "center", sortable: false },
-      { text: "日期", value: "insertTime", align: "center", sortable: true },
+      { text: "发布", value: "insertTime", align: "center", sortable: true },
+      { text: "截止", value: "deadLineTime", align: "center", sortable: true },
       {
-        text: "完成时间",
+        text: "完成",
         value: "completeTime",
         align: "center",
         sortable: true
@@ -65,7 +67,7 @@ export default {
     expand: false,
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-    homework: { id: null, title: null, content: null }
+    homework: { id: null, title: null, content: null, deadLineTime: null }
   }),
   created() {
     this.$store.dispatch(
@@ -73,7 +75,16 @@ export default {
       this.$route.params.cid
     );
   },
-  methods: {},
+  methods: {
+    verifyDeadLineTime(t) {
+      let deadLine = new Date(t);
+      let now = new Date();
+      if (now.getTime() > deadLine.getTime()) {
+        return false;
+      }
+      return true;
+    }
+  },
   computed: {
     ...mapState(NAMESPACE, {
       listHomeworks: state => state.homeworks,

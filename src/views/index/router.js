@@ -60,6 +60,14 @@ let adminRoutes = [
       default: () => import("./components/admin/HomeworkUnsubmited"),
       button: () => import("./components/admin/AddHomeworkButton")
     }
+  },
+  {
+    path: "homeworks/:hid/detail",
+    props: true,
+    components: {
+      default: () => import("./components/admin/ShowHomeworkDetail"),
+      button: () => import("./components/admin/AddHomeworkButton")
+    }
   }
 ];
 

@@ -26,6 +26,7 @@ export const DOWNLOAD_EXP = "downloadExp";
 export const LIST_EXP_DETAILS = "listExpDetails";
 export const LIST_HOMEWORK_DETAILS = "listHomeworkDetails";
 export const SUBMIT_HOMEWORK = "submitHomework";
+export const GET_HOMEWORKDETAIL = "getHomeworkDetail";
 //
 export const GET_SETTING = "getSetting";
 export const UPDATE_PASSWORD = "updatePassword";

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link
-      href="https://fonts.googleapis.com/css?family=Material+Icons"
+      href="https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css"
       rel="stylesheet"
     />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
@@ -18,7 +18,7 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="IEVersion()">
     <noscript>
       <strong
         >We're sorry but vue3 doesn't work properly without JavaScript enabled.
@@ -27,5 +27,22 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+      function IEVersion() {
+        var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+        var isIE =
+          userAgent.indexOf("compatible") > -1 &&
+          userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+        var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器
+        var isIE11 =
+          userAgent.indexOf("Trident") > -1 &&
+          userAgent.indexOf("rv:11.0") > -1;
+        if (isIE || isIE11) {
+          alert(
+            "检测到您使用的是IE浏览器，建议使用Google Chrome最新版本浏览器访问本系统"
+          );
+        }
+      }
+    </script>
   </body>
 </html>

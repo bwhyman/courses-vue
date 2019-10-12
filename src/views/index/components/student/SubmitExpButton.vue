@@ -23,7 +23,7 @@
             <v-btn color="warning" type="button" @click="del" v-if="!isEmpty">
               <v-icon>delete</v-icon>
             </v-btn>
-            <span v-if="isLarge" style="color: red;">仅上传实验报告文档，不包含工程，怎么会大于2MB呢</span>
+            <span v-if="isLarge" style="color: red;">仅上传实验报告文档，不包含工程，怎么会大于10MB呢</span>
             <p>
               <span
                 v-if="!isEmpty || isLarge"
@@ -34,9 +34,16 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="save" :disabled="isEmpty">
+        <v-btn
+          color="blue darken-1"
+          flat
+          @click="save"
+          v-if="verifyDeadLineTime"
+          :disabled="isEmpty"
+        >
           <v-icon>done</v-icon>
         </v-btn>
+        <v-icon color="red" dark v-if="!verifyDeadLineTime" title="过期">report_problem</v-icon>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -50,7 +57,7 @@ export default {
     dialog: false,
     file: { size: 0 },
     isEmpty: true,
-    filesize: 2 * 1000 * 1000,
+    filesize: 10 * 1000 * 1000,
     isLarge: false
   }),
   methods: {
@@ -89,6 +96,16 @@ export default {
         form: formData
       });
       this.dialog = false;
+    }
+  },
+  computed: {
+    verifyDeadLineTime() {
+      let deadLine = new Date(this.experiment.deadLineTime);
+      let now = new Date();
+      if (now.getTime() > deadLine.getTime()) {
+        return false;
+      }
+      return true;
     }
   }
 };

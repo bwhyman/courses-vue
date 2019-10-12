@@ -11,6 +11,7 @@
         <td class="text-xs-center">{{ props.index+1 }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="text-xs-center">{{ props.item.insertTime }}</td>
+        <td class="text-xs-center">{{ props.item.deadLineTime }}</td>
         <td class="text-xs-center">
           <template v-for="(ed, index) in listExpDetails">
             <span v-if="ed.experiment.id == props.item.id" :key="index">{{ed.completeTime}}</span>
@@ -23,7 +24,7 @@
               color="info"
               dark
               @click="download(props.item.id, ed.id)"
-              v-if="ed.experiment.id == props.item.id"
+              :disabled="!(ed.experiment.id == props.item.id)"
               :key="index"
             >
               <v-icon>cloud_download</v-icon>
@@ -56,7 +57,13 @@ export default {
         { text: "实验", value: "name", align: "center", sortable: true },
         { text: "日期", value: "insertTime", align: "center", sortable: true },
         {
-          text: "提交日期",
+          text: "截止",
+          value: "deadLineTime",
+          align: "center",
+          sortable: true
+        },
+        {
+          text: "完成",
           value: "insertTime",
           align: "center",
           sortable: true

@@ -14,11 +14,14 @@
           <v-icon color="primary" @click="props.expanded = !props.expanded">more</v-icon>
         </td>
         <td class="text-xs-center">{{ props.item.insertTime }}</td>
+        <td class="text-xs-center">{{ props.item.deadLineTime }}</td>
         <td class="text-xs-center">
           <v-btn color="info" dark :to="`homeworks/${props.item.id}/unsubmited`">
             <v-icon>visibility_off</v-icon>
           </v-btn>
-          <v-btn color="info" dark :to="`homeworks/${ props.item.id}/zip`">XXX</v-btn>
+          <v-btn color="info" dark :to="`homeworks/${ props.item.id}/detail`">
+            <v-icon>youtube_searched_for</v-icon>
+          </v-btn>
         </td>
         <td class="justify-center layout px-0">
           <v-icon small color="primary" dark class="mr-2" @click="editItem(props.item)">edit</v-icon>
@@ -56,6 +59,13 @@
                   v-model="homework.title"
                   :rules="rules.requiredRules"
                 ></v-text-field>
+                <v-text-field
+                  label="截止时间*"
+                  required
+                  v-model="homework.deadLineTime"
+                  :rules="rules.requiredRules"
+                ></v-text-field>
+
                 <v-textarea
                   name="input-7-1"
                   label="作业内容*"
@@ -109,9 +119,10 @@ export default {
     rowsPerPage: [20, { text: "全部", value: -1 }],
     headers: [
       { text: "#", value: "id", align: "center", sortable: true },
-      { text: "作业", value: "title", align: "center", sortable: true },
+      { text: "题目", value: "title", align: "center", sortable: true },
       { text: "详细", value: "content", align: "center", sortable: false },
-      { text: "日期", value: "insertTime", align: "center", sortable: true },
+      { text: "发布", value: "insertTime", align: "center", sortable: true },
+      { text: "截止", value: "deadLineTime", align: "center", sortable: true },
       { text: "操作", value: "", align: "center", sortable: false },
       { text: "修改", value: "", align: "center", sortable: false }
     ],
@@ -120,7 +131,13 @@ export default {
     dialog: false,
     deldialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-    homework: { id: null, title: null, content: null }
+    homework: {
+      id: null,
+      title: null,
+      content: null,
+      deadLineTime: null,
+      course: { id: null }
+    }
   }),
 
   methods: {
@@ -128,6 +145,8 @@ export default {
       this.homework.id = item.id;
       this.homework.title = item.title;
       this.homework.content = item.content;
+      this.homework.deadLineTime = item.deadLineTime;
+      this.homework.course.id = this.$route.params.cid;
       this.dialog = true;
     },
     deleteItem(item) {
@@ -141,7 +160,9 @@ export default {
         cid: this.$route.params.cid,
         homework: this.homework
       });
-      this.dialog = false;
+      this.$nextTick(() => {
+        this.dialog = false;
+      });
     },
     del() {
       this.$store.dispatch(NAMESPACE + "/" + DEL_HOMEWORK, {

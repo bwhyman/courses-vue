@@ -17,6 +17,11 @@
                 v-model="homework.title"
                 :rules="rules.requiredRules"
               ></v-text-field>
+              <!-- <v-date-picker v-model="date" color="green lighten-1"></v-date-picker>
+              <v-time-picker v-model="time" format="24hr"></v-time-picker>-->
+
+              <datetimepicker ref="picker"></datetimepicker>
+
               <v-textarea
                 name="input-7-1"
                 label="作业内容*"
@@ -38,12 +43,19 @@
 </template>
 <script>
 import { NAMESPACE, ADD_HOMEWORK } from "@/views/index/store/types";
+import datetimepicker from "@/views/index/components/commons/DateTimepicker";
 export default {
+  components: { datetimepicker },
   data: () => ({
+    date: null,
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-
-    homework: { title: null, content: null }
+    homework: {
+      title: null,
+      content: null,
+      deadLineTime: null,
+      course: { id: null }
+    }
   }),
   methods: {
     openForm() {
@@ -52,6 +64,9 @@ export default {
     },
     save() {
       if (this.$refs.form.validate()) {
+        let picker = this.$refs.picker;
+        this.homework.deadLineTime = picker.date + " " + picker.time;
+        this.homework.course.id = this.$route.params.cid;
         this.$store.dispatch(NAMESPACE + "/" + ADD_HOMEWORK, {
           cid: this.$route.params.cid,
           homework: this.homework

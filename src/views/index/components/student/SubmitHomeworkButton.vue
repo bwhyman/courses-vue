@@ -16,7 +16,8 @@
       />
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="save">
+        <v-icon color="red" dark v-if="!verifyDeadLineTime" title="过期">report_problem</v-icon>
+        <v-btn color="blue darken-1" flat @click="save" v-if="verifyDeadLineTime">
           <v-icon>done</v-icon>
         </v-btn>
       </v-card-actions>
@@ -35,7 +36,7 @@ export default {
     lineNumbers: true,
     dialog: false,
     rules: { requiredRules: [v => !!v || "不能为空"] },
-    homeworkDetail: { solution: "" }
+    homeworkDetail: { solution: "", deadLineTime: null }
   }),
   methods: {
     save() {
@@ -48,6 +49,14 @@ export default {
     }
   },
   computed: {
+    verifyDeadLineTime() {
+      let deadLine = new Date(this.homework.deadLineTime);
+      let now = new Date();
+      if (now.getTime() > deadLine.getTime()) {
+        return false;
+      }
+      return true;
+    },
     getDetail() {
       let ed = this.listHomeworkDetails.find(
         hd => hd.homework.id == this.homework.id

@@ -7,7 +7,7 @@ module.exports = {
     host: "localhost",
     // 设置代理
     proxy: {
-      "/api/": {
+      "/api": {
         // websocket协议代理
         ws: false,
         // 目标 API 地址

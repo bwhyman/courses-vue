@@ -22,6 +22,7 @@ export const adminmodule = {
         title: null,
         content: null,
         insertTime: null,
+        deadLineTime: null,
         course: { id: null }
       }
     ],
@@ -174,10 +175,17 @@ export const adminmodule = {
         });
     },
     async [types.SUBMIT_EXP]({ commit }, data) {
+      commit(types.LOADING, true);
       let resp = await axios.post(
         "/courses/" + data.cid + "/experiments/" + data.expid + "/file",
-        data.form
+        data.form,
+        {
+          onUploadProgress: progressEvent => {
+            commit(types.GET_LOADED, progressEvent.loaded);
+          }
+        }
       );
+      commit(types.LOADING, false);
       commit(types.LIST_EXP_DETAILS, resp.data.expDetails);
     },
     async [types.DOWNLOAD_EXP]({ commit }, data) {
@@ -264,6 +272,18 @@ export const adminmodule = {
         data.detail
       );
       commit(types.LIST_HOMEWORK_DETAILS, resp.data.homeworkDetails);
+    },
+    async [types.GET_HOMEWORKDETAIL](state, data) {
+      let resp = await axios.get(
+        ADMIN +
+          "/courses/" +
+          data.cid +
+          "/homeworks/" +
+          data.hid +
+          "/students/" +
+          data.sid
+      );
+      return Promise.resolve(resp.data.homeworkDetail);
     },
 
     // =============  STUDENTS  ======
