@@ -12,6 +12,12 @@
           <v-form ref="form">
             <datetimepicker ref="picker"></datetimepicker>
             <v-text-field
+              label="文件尺寸 MB*"
+              required
+              v-model="experiment.size"
+              :rules="rules.requiredRules"
+            ></v-text-field>
+            <v-text-field
               label="实验*"
               required
               v-model="experiment.name"
@@ -43,6 +49,7 @@ export default {
     experiment: {
       name: null,
       fileExtension: null,
+      size: 10,
       deadLineTime: null,
       course: { id: null }
     }

@@ -1,0 +1,48 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js '12.x'
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    - name: docker push
+    - run: |
+      ${{ secrets.dockerlogin }}
+      docker build . -t ${{ secrets.dockerrepository }}
+      docker push ${{ secrets.dockerrepository }}
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.host }}
+        username: ${{ secrets.username }}
+        password: ${{ secrets.pwd }}
+        script: |
+          ${{ secrets.dockerlogin }}
+          cd /home/services/courses
+          docker-compose -f base.yaml up -d
+          cd nginx
+          docker-compose -f nginx.yaml pull && docker-compose -f nginx.yaml up -d
+          docker rmi $(docker images -f dangling=true ${{ secrets.dockerrepository }} -q)

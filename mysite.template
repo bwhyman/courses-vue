@@ -1,0 +1,12 @@
+server {
+  client_max_body_size 0;
+  location / {
+    root /usr/share/nginx/html;
+    index ${index};
+  }
+  location /api/ {
+    proxy_pass http://${backend};
+  }
+}
+
+

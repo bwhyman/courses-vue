@@ -7,7 +7,12 @@
       <v-card-title>
         <span class="headline">实验: {{experiment.name}}</span>
       </v-card-title>
-      <v-card-text>
+      <v-card-text v-if="verifyDeadLineTime">
+        <v-card-text>
+          <span style="color: red;">已过截至时间</span>
+        </v-card-text>
+      </v-card-text>
+      <v-card-text v-else>
         <v-flex xs12>
           <v-form ref="form">
             <input
@@ -23,7 +28,7 @@
             <v-btn color="warning" type="button" @click="del" v-if="!isEmpty">
               <v-icon>delete</v-icon>
             </v-btn>
-            <span v-if="isLarge" style="color: red;">仅上传实验报告文档，不包含工程，怎么会大于10MB呢</span>
+            <span v-if="isLarge" style="color: red;">超过上传文件尺寸限制 {{experiment.size}}MB</span>
             <p>
               <span
                 v-if="!isEmpty || isLarge"
@@ -32,18 +37,16 @@
           </v-form>
         </v-flex>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="!verifyDeadLineTime">
         <v-spacer></v-spacer>
         <v-btn
           color="blue darken-1"
           flat
           @click="save"
-          v-if="verifyDeadLineTime"
-          :disabled="isEmpty"
+          :disabled="isEmpty || isLarge"
         >
           <v-icon>done</v-icon>
         </v-btn>
-        <v-icon color="red" dark v-if="!verifyDeadLineTime" title="过期">report_problem</v-icon>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -57,7 +60,6 @@ export default {
     dialog: false,
     file: { size: 0 },
     isEmpty: true,
-    filesize: 10 * 1000 * 1000,
     isLarge: false
   }),
   methods: {
@@ -75,7 +77,7 @@ export default {
       this.isEmpty = false;
       let f = event.target.files[0];
       this.file = f;
-      if (f.size > this.filesize) {
+      if (f.size / 1024 / 1024 > this.experiment.size) {
         this.isLarge = true;
         this.isEmpty = true;
       }
@@ -102,10 +104,7 @@ export default {
     verifyDeadLineTime() {
       let deadLine = new Date(this.experiment.deadLineTime);
       let now = new Date();
-      if (now.getTime() > deadLine.getTime()) {
-        return false;
-      }
-      return true;
+      return now.getTime() > deadLine.getTime();
     }
   }
 };
