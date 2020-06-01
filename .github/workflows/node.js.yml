@@ -24,7 +24,7 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
     - name: docker push
-    - run: |
+      run: |
        ${{ secrets.dockerlogin }}
         docker build . -t ${{ secrets.dockerrepository }}
         docker push ${{ secrets.dockerrepository }}
