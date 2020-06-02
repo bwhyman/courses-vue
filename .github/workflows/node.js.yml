@@ -26,7 +26,7 @@ jobs:
     - name: docker push
       run: |
        ${{ secrets.dockerlogin }}
-        docker build -t ${{ secrets.dockerrepository }} . -f-
+        docker build -t ${{ secrets.dockerrepository }} .
         docker push ${{ secrets.dockerrepository }}
 
   deploy:
