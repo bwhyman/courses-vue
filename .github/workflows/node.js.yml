@@ -45,4 +45,5 @@ jobs:
           docker-compose -f base.yaml up -d
           cd nginx
           docker-compose -f nginx.yaml pull && docker-compose -f nginx.yaml up -d
-          [ -z $(docker images -q  ${{ secrets.dockerrepository }}) ] || docker rmi $(docker images -f dangling=true ${{ secrets.dockerrepository }} -q)
+          [ ! $(docker images -f dangling=true ${{ secrets.dockerrepository }} -q) ] || \
+           docker rmi $(docker images -f dangling=true ${{ secrets.dockerrepository }} -q)
