@@ -15,7 +15,7 @@
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.7",
     "vuex": "^3.0.1",
-    "xlsx": "^0.14.1"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@mdi/font": "^3.3.92",
